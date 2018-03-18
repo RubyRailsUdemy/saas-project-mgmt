@@ -6,19 +6,23 @@
   text-align: center;
 
   a {
-    color: #fff !important;
+    color: #111 !important;
     margin: 0 !important;
-    padding: 5px!important;
+    /*padding: 5px!important;*/
   }
 
   a:hover, a:focus {
-    color: #000 !important;
+    background: none;
   }
 }
 
 .nav.navbar-right {
   padding-bottom: 10px;
   padding-top: 5px;
+  
+  .btn.btn-xs.btn-danger.btn-logout {
+    padding-right: 55px !important;
+  }
 }
 .nav.navbar-nav {
   .navbar-link {
@@ -32,7 +36,7 @@
     color: #fff;
   }
   li a {
-    margin-right: 5px;
+    margin-right: 2px;
   }
 }
 
