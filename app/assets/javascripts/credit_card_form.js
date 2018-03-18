@@ -1,48 +1,46 @@
-// function to get params from url
+// function to get params from URL
+
 function GetURLParameter(sParam) {
   var sPageURL = window.location.search.substring(1);
   var sURLVariables = sPageURL.split('&');
-  for (var i=0; i<sURLVariables.length; i++)
+  for (var i = 0; i < sURLVariables.length; i++)
   {
     var sParameterName = sURLVariables[i].split('=');
-    if(sParameterName[0] == sParam)
+    if (sParameterName[0] == sParam)
     {
-      return sParameterName[1];
+        return sParameterName[1];
     }
   }
 };
 
-
-$(document).ready(function() {
-
+$(document).ready(function () {
+  
   var show_error, stripeResponseHandler, submitHandler;
 
-  // function to handle the submit of form
-  submitHandler = function(event) {
+// function to handle the submit of the form and intercept the default event
+  submitHandler = function (event) {
     var $form = $(event.target);
     $form.find("input[type=submit]").prop("disabled", true);
     if(Stripe){
       Stripe.card.createToken($form, stripeResponseHandler);
     } else {
-      show_error("Failed to load credit card processing functionality. Please reload the page");
+      show_error("Failed to load credit card processing functionality. Please reload the page")
     }
     return false;
   };
 
-
-  // Initiate submit handler listener with any form with the class cc_form
+// Initiate submit handler listener for any form with class cc_form
   $(".cc_form").on('submit', submitHandler);
 
-  // handle plan drop down event
-  var handlePlanChange = function(plan_type, form)
-  {
+// handle event of plan drop down changing
+  var handlePlanChange = function(plan_type, form) {
     var $form = $(form);
-
+    
     if(plan_type == undefined) {
-      plan_type = $('#tenant_plan :selected').val()
+      plan_type = $('#tenant_plan :selected').val();
     }
-
-    if(plan_type === 'premium') {
+    
+    if( plan_type === 'premium') {
       $('[data-stripe]').prop('required', true);
       $form.off('submit');
       $form.on('submit', submitHandler);
@@ -54,49 +52,41 @@ $(document).ready(function() {
     }
   }
 
-  // set up plan change event listener for id #tenant_plan id in the forms for class cc_form
+// Set up plan change event listener #tenant_plan id in the forms for class cc_form
   $("#tenant_plan").on('change', function(event) {
     handlePlanChange($('#tenant_plan :selected').val(), ".cc_form");
   });
 
-  // call plan change handler so that the plan is set correctly in the drop down when page loads
+// call plan change handler so that the plan is set correctly in the drop down when the page loads
   handlePlanChange(GetURLParameter('plan'), ".cc_form");
 
-  // fucntion to handle the token returned from stripe and remove cc info
-  stripeResponseHandler = function(status, response) {
+// function to handle the token received from Stripe and remove credit card fields
+  stripeResponseHandler = function (status, response) {
     var token, $form;
-
+    
     $form = $('.cc_form');
-
-    if(response.error) {
+    
+    if (response.error) {
       console.log(response.error.message);
       show_error(response.error.message);
       $form.find("input[type=submit]").prop("disabled", false);
     } else {
       token = response.id;
-      
-      //Add payment token as hidden field
       $form.append($("<input type=\"hidden\" name=\"payment[token]\" />").val(token));
-      
-      //Remove CC Info
       $("[data-stripe=number]").remove();
-      $("[data-stripe=cvc]").remove();
+      $("[data-stripe=cvv]").remove();
       $("[data-stripe=exp-year]").remove();
       $("[data-stripe=exp-month]").remove();
       $("[data-stripe=label]").remove();
-
-      //Submit the form
       $form.get(0).submit();
     }
     return false;
   };
-
-  // function to show errors when stripe functionality returns an error
-  show_error = function(message) {
-    if($("#flash-messages").size() < 1) {
-      $('div.container.main div:first').prepend("<div id='flash-messages'></div>");
+  // function to show errors when Stripe functionality returns an error
+  show_error = function (message) {
+    if($("#flash-messages").size() < 1){
+      $('div.container.main div:first').prepend("<div id='flash-messages'></div>")
     }
-
     $("#flash-messages").html('<div class="alert alert-warning"><a class="close" data-dismiss="alert">×</a><div id="flash_alert">' + message + '</div></div>');
     $('.alert').delay(5000).fadeOut(3000);
     return false;

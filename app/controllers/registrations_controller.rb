@@ -17,7 +17,7 @@ class RegistrationsController < Milia::RegistrationsController
 		    if @tenant.errors.empty?   # tenant created
 		    	if@tenant.plan == 'premium'
 		    		@payment = Payment.new({email: user_params["email"], token: params[:payment]["token"], tenant: @tenant})
-		    		flash[:error] = "Please registration errors" unless @payment.valid?
+		    		flash[:error] = "Please fix registration errors" unless @payment.valid?
 		    		begin
 		    			@payment.process_payment
 		    			@payment.save
