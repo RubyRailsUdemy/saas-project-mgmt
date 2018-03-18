@@ -13,6 +13,7 @@ gem 'milia'
 gem 'twitter-bootstrap-rails'
 gem 'jquery-rails'
 gem 'devise-bootstrap-views'
+gem 'aws-sdk'
 #gem 'bootstrap-datepicker-rails', :require => 'bootstrap-datepicker-rails', :git => 'git://github.com/Nerian/bootstrap-datepicker-rails.git'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
